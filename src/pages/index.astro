@@ -1,16 +1,16 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Logo from "../components/Logo.astro";
+import TicketInput from "../components/TicketInput.astro";
+import InfoBanner from "../components/InfoBanner.astro";
+import Plans from "../components/Plans.astro";
+import Footer from "../components/Footer.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Portal Hotspot">
+  <Logo text="ELECTRONET" />
+  <TicketInput />
+  <InfoBanner />
+  <Plans />
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,65 @@
+---
+
+---
+
+<div class="group mb-1 w-full">
+  <div
+    class="relative overflow-hidden rounded-lg transition-all duration-300 focus-within:shadow-md"
+    style="background-color: var(--bg-secondary); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);"
+  >
+    <!-- Gradient border on focus -->
+    <div
+      class="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-focus-within:opacity-100"
+      style="background: linear-gradient(135deg, var(--primary-500), var(--primary-300)); padding: 1.5px;"
+    >
+      <div
+        class="absolute inset-px rounded-lg"
+        style="background-color: var(--bg-secondary);"
+      >
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="relative flex items-center gap-2 px-3 py-2.5">
+      <!-- Input -->
+      <input
+        type="text"
+        placeholder="Ticket o PIN"
+        class="flex-1 bg-transparent text-sm outline-none"
+        style="color: var(--text);"
+      />
+
+      <!-- Submit Button -->
+      <button
+        class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-300 hover:scale-105 active:scale-95"
+        style="background-color: var(--primary-500); color: white; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2.5"
+          stroke="currentColor"
+          class="h-4 w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Hint text -->
+  <p class="my-2 text-xs" style="color: var(--text-secondary);">
+    Ingresa tu código de ticket o PIN para continuar
+  </p>
+</div>
+
+<style>
+  input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+  }
+</style>

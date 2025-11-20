@@ -1,0 +1,94 @@
+---
+interface Props {
+  count?: number;
+}
+
+const { count = 6 } = Astro.props;
+
+// Generar planes dinámicamente
+const generatePlans = (amount: number) => {
+  const durations = ["1hr", "2hrs", "4hrs", "8hrs", "12hrs", "1 día", "2 días", "3 días", "7 días", "15 días"];
+  const basePrices = [10, 18, 32, 60, 80, 50, 90, 120, 200, 350];
+  
+  return Array.from({ length: amount }).map((_, i) => ({
+    duration: durations[i % durations.length],
+    price: basePrices[i % basePrices.length] + "bs"
+  }));
+};
+
+const plans = generatePlans(count);
+const columns = count === 2 ? "grid-cols-2" : count === 4 ? "grid-cols-4" : count <= 6 ? "grid-cols-3" : "grid-cols-4";
+---
+
+<div class="space-y-2">
+  <!-- Header -->
+  <div>
+    <h2 class="text-sm font-bold transition-colors" style="color: var(--text);">
+      Planes
+    </h2>
+    <p class="text-xs font-semibold transition-colors" style="color: var(--primary-500);">
+      ⚡ Megas Ilimitados
+    </p>
+  </div>
+
+  <!-- Plans Grid -->
+  <div class={`grid ${columns} gap-1.5`}>
+    {
+      plans.map((plan, index) => (
+        <div
+          class="plan-card group relative overflow-hidden rounded-md p-2 transition-all hover:shadow-md active:scale-95"
+          style={{
+            backgroundColor: "var(--bg-secondary)",
+            borderColor: "var(--primary-400)",
+            borderWidth: "1px",
+            animationDelay: `${index * 50}ms`,
+          }}
+        >
+          <!-- Gradient overlay on hover -->
+          <div
+            class="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-10"
+            style="background: linear-gradient(135deg, var(--primary-500), var(--primary-300));"
+          ></div>
+
+          <!-- Content -->
+          <div class="relative text-center">
+            <span
+              class="block text-xs font-bold transition-colors mb-0.5"
+              style={{ color: "var(--primary-600)" }}
+            >
+              {plan.price}
+            </span>
+            <h3
+              class="text-xs font-bold transition-colors"
+              style={{ color: "var(--text)" }}
+            >
+              {plan.duration}
+            </h3>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .plan-card {
+    animation: slideUp 0.4s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .plan-card:hover {
+    transform: translateY(-2px);
+  }
+</style>

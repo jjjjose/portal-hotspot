@@ -1,0 +1,104 @@
+---
+import "../styles/global.css";
+import ThemeSelector from "../components/ThemeSelector.astro";
+
+const {
+  title = "Portal Hotspot",
+  description = "Conecta y comparte contenido.",
+} = Astro.props;
+
+const particleCount = 200;
+const palette = [
+  "var(--primary-200)",
+  "var(--primary-300)",
+  "var(--primary-400)",
+  "var(--primary-500)",
+  "var(--primary-600)",
+  "var(--primary-700)",
+];
+
+const randomBetween = (min: number, max: number) =>
+  Math.random() * (max - min) + min;
+
+const particles = Array.from({ length: particleCount }, (_, idx) => {
+  const size = randomBetween(3, 9);
+  const riseDistance = randomBetween(120, 190);
+  return {
+    id: idx,
+    size: size.toFixed(2),
+    x: `${randomBetween(0, 100).toFixed(2)}%`,
+    y: `${randomBetween(105, 135).toFixed(2)}%`,
+    opacity: randomBetween(0.06, 0.18).toFixed(2),
+    delay: `${randomBetween(0, 12).toFixed(2)}s`,
+    duration: `${randomBetween(7, 14).toFixed(2)}s`,
+    color: palette[Math.floor(Math.random() * palette.length)],
+    driftStart: `${randomBetween(-10, 10).toFixed(2)}px`,
+    driftMid: `${randomBetween(-25, 25).toFixed(2)}px`,
+    driftEnd: `${randomBetween(-15, 15).toFixed(2)}px`,
+    riseDistance: `${riseDistance.toFixed(2)}vh`,
+    blur: `${randomBetween(0.8, 1.8).toFixed(2)}px`,
+    scaleStart: randomBetween(0.6, 1).toFixed(2),
+    scaleMid: randomBetween(0.9, 1.4).toFixed(2),
+    scaleEnd: randomBetween(0.2, 0.5).toFixed(2),
+  };
+});
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body
+    class="flex min-h-screen flex-col font-sans antialiased transition-colors"
+    style="background-color: var(--bg); color: var(--text);"
+  >
+    <!-- Background Elements -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+      <!-- SVG Pattern -->
+      <svg
+        class="absolute inset-0 h-full w-full opacity-[0.03]"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <pattern
+            id="grid-pattern"
+            width="40"
+            height="40"
+            patternUnits="userSpaceOnUse"
+          >
+            <circle cx="2" cy="2" r="1" style="fill: var(--text);"></circle>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid-pattern)"></rect>
+      </svg>
+
+      <!-- Particle Field: Bubbles rising and disappearing like stars -->
+      <div
+        class="particle-field absolute inset-0 -z-10 pointer-events-none"
+        aria-hidden="true"
+      >
+        {
+          particles.map((particle) => (
+            <span
+              class="particle"
+              style={`--size:${particle.size}px; --x:${particle.x}; --y:${particle.y}; --o:${particle.opacity}; --d:${particle.delay}; --c:${particle.color}; --duration:${particle.duration}; --drift-start:${particle.driftStart}; --drift-mid:${particle.driftMid}; --drift-end:${particle.driftEnd}; --rise-distance:${particle.riseDistance}; --blur:${particle.blur}; --scale-start:${particle.scaleStart}; --scale-mid:${particle.scaleMid}; --scale-end:${particle.scaleEnd};`}
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    <header class="fixed top-0 right-0 z-50 px-4 py-4 pointer-events-auto">
+      <ThemeSelector />
+    </header>
+    <main
+      class="mx-auto flex w-full max-w-[700px] flex-1 flex-col justify-center p-4"
+    >
+      <slot />
+    </main>
+  </body>
+</html>

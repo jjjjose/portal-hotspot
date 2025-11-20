@@ -1,0 +1,166 @@
+---
+const themes = [
+  { name: "emerald", color: "#10b981" },
+  { name: "blue", color: "#3b82f6" },
+  { name: "purple", color: "#a855f7" },
+  { name: "rose", color: "#f43f5e" },
+  { name: "amber", color: "#f59e0b" },
+  { name: "cyan", color: "#06b6d4" },
+  { name: "lime", color: "#84cc16" },
+  { name: "fuchsia", color: "#d946ef" },
+  { name: "orange", color: "#f97316" },
+  { name: "teal", color: "#14b8a6" },
+];
+---
+
+<div class="flex items-center gap-2" id="controls">
+  <!-- Dark Mode Toggle -->
+  <button
+    type="button"
+    class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white p-2 text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+    id="dark-mode-toggle"
+    aria-label="Cambiar a modo oscuro"
+    title="Modo oscuro"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="h-5 w-5"
+      id="dark-icon"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+      ></path>
+    </svg>
+  </button>
+
+  <!-- Color Theme Selector -->
+  <div class="relative inline-block text-left" id="theme-selector">
+    <button
+      type="button"
+      class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white p-2 text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+      id="theme-menu-button"
+      aria-expanded="false"
+      aria-haspopup="true"
+      title="Cambiar tema de color"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="h-5 w-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.077-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.04 2.825a15.977 15.977 0 011.183-5.056 8.69 8.69 0 00-2.25-2.25c-1.104 0-2.052.682-2.433 1.632-.259.655-.99 1.019-1.642.75A13.953 13.953 0 00.75 19.5a2.25 2.25 0 002.25 2.25 13.942 13.942 0 007.83-2.438zM15.75 15a3 3 0 11-6 0 3 3 0 016 0zm0 0c1.085 0 2.034-.682 2.433-1.632.259-.655.99-1.019 1.642-.75A13.953 13.953 0 0023.25 4.5a2.25 2.25 0 00-2.25-2.25 13.942 13.942 0 00-7.83 2.438m-5.04 2.825a15.977 15.977 0 011.183 5.056"
+        ></path>
+      </svg>
+    </button>
+
+    <div
+      class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden dark:bg-slate-800 dark:ring-slate-700"
+      role="menu"
+      aria-orientation="vertical"
+      aria-labelledby="theme-menu-button"
+      tabindex="-1"
+      id="theme-menu"
+    >
+      <div class="grid grid-cols-5 gap-2 p-2" role="none">
+        {
+          themes.map((theme) => (
+            <button
+              class="h-6 w-6 rounded-full border border-slate-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-1 transition-transform dark:border-slate-600"
+              style={`background-color: ${theme.color}`}
+              data-theme-name={theme.name}
+              title={theme.name}
+              role="menuitem"
+            />
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const darkModeToggle = document.getElementById("dark-mode-toggle");
+  const darkIcon = document.getElementById("dark-icon");
+  const button = document.getElementById("theme-menu-button");
+  const menu = document.getElementById("theme-menu");
+  const themeButtons = document.querySelectorAll("[data-theme-name]");
+
+  // Initialize mode
+  const savedMode = localStorage.getItem("mode") || "light";
+  if (savedMode === "dark") {
+    document.documentElement.setAttribute("data-mode", "dark");
+    updateDarkModeIcon(true);
+  }
+
+  // Dark mode toggle
+  darkModeToggle?.addEventListener("click", () => {
+    const currentMode = document.documentElement.getAttribute("data-mode");
+    const newMode = currentMode === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-mode", newMode);
+    localStorage.setItem("mode", newMode);
+    updateDarkModeIcon(newMode === "dark");
+  });
+
+  function updateDarkModeIcon(isDark: boolean) {
+    if (isDark) {
+      darkIcon?.setAttribute(
+        "d",
+        "M12 3v2.25m6.364.386l-1.591 1.591M21 12a9 9 0 11-18 0 9 9 0 0118 0zm0 0v-2.25m-6.364.386l1.591 1.591M12 18.75V21m4.243-3.757l1.591 1.591M5.25 12H3m2.25 0v2.25m6.364-6.364l1.591-1.591M3 12a9 9 0 1118 0 9 9 0 01-18 0z"
+      );
+    } else {
+      darkIcon?.setAttribute(
+        "d",
+        "M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+      );
+    }
+  }
+
+  // Toggle menu
+  button?.addEventListener("click", () => {
+    const isExpanded = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", (!isExpanded).toString());
+    menu?.classList.toggle("hidden");
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (event) => {
+    if (
+      !button?.contains(event.target as Node) &&
+      !menu?.contains(event.target as Node) &&
+      !darkModeToggle?.contains(event.target as Node)
+    ) {
+      button?.setAttribute("aria-expanded", "false");
+      menu?.classList.add("hidden");
+    }
+  });
+
+  // Handle theme selection
+  themeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const theme = btn.getAttribute("data-theme-name");
+      if (theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        // Close menu
+        button?.setAttribute("aria-expanded", "false");
+        menu?.classList.add("hidden");
+      }
+    });
+  });
+
+  // Initialize theme
+  const savedTheme = localStorage.getItem("theme") || "emerald";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+</script>
