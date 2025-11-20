@@ -1,15 +1,80 @@
 ---
-
+import LoadingOverlay from "./LoadingOverlay.astro";
 ---
+
+<script>
+  const url = "http://localhost:3000/ticket/";
+  const input = document.querySelector(
+    'input[placeholder="Ticket o PIN"]'
+  ) as HTMLInputElement;
+  const button = document.querySelector("#submit-btn") as HTMLButtonElement;
+  const errorMsg = document.querySelector(
+    ".error-message"
+  ) as HTMLParagraphElement;
+  const hintMsg = document.querySelector(".hint-text") as HTMLParagraphElement;
+  const loader = document.querySelector("#loader-overlay") as HTMLDivElement;
+
+  const MIN_LENGTH = 4;
+  const DELAY_MS = 3000;
+
+  const updateState = () => {
+    const isValid = input.value.length >= MIN_LENGTH;
+    button.disabled = isValid === false;
+
+    if (input.value.length > 0 && input.value.length < MIN_LENGTH) {
+      errorMsg.textContent = `⚠️ Mínimo ${MIN_LENGTH} caracteres (tienes ${input.value.length})`;
+      errorMsg.classList.remove("hidden");
+      hintMsg.classList.add("hidden");
+    } else {
+      errorMsg.classList.add("hidden");
+      hintMsg.classList.remove("hidden");
+    }
+  };
+
+  const showLoader = () => {
+    loader.classList.remove("hidden");
+    loader.classList.add("show");
+  };
+
+  const hideLoader = () => {
+    loader.classList.remove("show");
+    loader.classList.add("hidden");
+  };
+
+  const submit = () => {
+    if (input.value.length < MIN_LENGTH) {
+      errorMsg.textContent = `⚠️ Debes ingresar mínimo ${MIN_LENGTH} caracteres`;
+      errorMsg.classList.remove("hidden");
+      hintMsg.classList.add("hidden");
+      return;
+    }
+
+    if (input.value.trim()) {
+      showLoader();
+      button.disabled = true;
+      input.disabled = true;
+
+      setTimeout(() => {
+        window.location.href = url + input.value;
+      }, DELAY_MS);
+    }
+  };
+
+  input.addEventListener("input", updateState);
+  button.addEventListener("click", submit);
+  input.addEventListener("keypress", (e) => e.key === "Enter" && submit());
+
+  updateState();
+</script>
 
 <div class="group mb-1 w-full">
   <div
-    class="relative overflow-hidden rounded-lg transition-all duration-300 focus-within:shadow-md"
-    style="background-color: var(--bg-secondary); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);"
+    class="relative overflow-hidden rounded-lg transition-all duration-300 focus-within:shadow-lg"
+    style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-secondary) 100%); border: 1.5px solid var(--primary-200); box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(16, 185, 129, 0.05);"
   >
-    <!-- Gradient border on focus -->
+    <!-- Gradient border glow on focus -->
     <div
-      class="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-focus-within:opacity-100"
+      class="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 pointer-events-none"
       style="background: linear-gradient(135deg, var(--primary-500), var(--primary-300)); padding: 1.5px;"
     >
       <div
@@ -19,28 +84,58 @@
       </div>
     </div>
 
+    <!-- Animated background shine -->
+    <div
+      class="absolute inset-0 opacity-0 transition-opacity duration-300 group-focus-within:opacity-20 pointer-events-none"
+      style="background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 2s infinite;"
+    >
+    </div>
+
     <!-- Content -->
     <div class="relative flex items-center gap-2 px-3 py-2.5">
+      <!-- Icon -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        class="h-4 w-4 transition-all duration-300 group-focus-within:scale-110"
+        style="color: var(--primary-500);"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"
+        ></path>
+      </svg>
+
       <!-- Input -->
       <input
         type="text"
         placeholder="Ticket o PIN"
-        class="flex-1 bg-transparent text-sm outline-none"
+        class="flex-1 bg-transparent text-sm font-medium outline-none transition-colors"
         style="color: var(--text);"
       />
 
       <!-- Submit Button -->
       <button
-        class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-300 hover:scale-105 active:scale-95"
-        style="background-color: var(--primary-500); color: white; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);"
+        id="submit-btn"
+        class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-300 relative"
+        style="background: linear-gradient(135deg, var(--primary-500), var(--primary-600)); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);"
       >
+        <!-- Button glow -->
+        <div
+          id="btn-glow"
+          class="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300"
+          style="background: radial-gradient(circle, rgba(255,255,255,0.6), transparent); filter: blur(8px);"
+        >
+        </div>
+
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
           stroke-width="2.5"
           stroke="currentColor"
-          class="h-4 w-4"
+          class="h-4 w-4 relative"
         >
           <path
             stroke-linecap="round"
@@ -51,15 +146,59 @@
     </div>
   </div>
 
+  <!-- Error message -->
+  <p
+    class="error-message hidden my-2 text-xs font-medium transition-colors"
+    style="color: #ef4444;"
+  >
+  </p>
+
   <!-- Hint text -->
-  <p class="my-2 text-xs" style="color: var(--text-secondary);">
-    Ingresa tu código de ticket o PIN para continuar
+  <p
+    class="hint-text my-2 text-xs font-medium transition-colors"
+    style="color: var(--text-secondary);"
+  >
+    📌 Ingresa tu código de ticket o PIN (mínimo 4 caracteres)
   </p>
 </div>
+
+<LoadingOverlay />
 
 <style>
   input::placeholder {
     color: var(--text-secondary);
-    opacity: 0.6;
+    opacity: 0.5;
+  }
+
+  input:focus::placeholder {
+    opacity: 0.3;
+    color: var(--primary-300);
+  }
+
+  #submit-btn {
+    transition: all 300ms ease-in-out;
+  }
+
+  #submit-btn:disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+  }
+
+  #submit-btn:not(:disabled):hover {
+    transform: scale(1.1);
+  }
+
+  #submit-btn:not(:disabled):active {
+    transform: scale(0.9);
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
 </style>
