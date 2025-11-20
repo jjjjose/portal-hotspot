@@ -3,12 +3,12 @@ interface Props {
   count?: number;
 }
 
-const { count = 6 } = Astro.props;
+const { count = 4 } = Astro.props;
 
 // Generar planes dinámicamente
 const generatePlans = (amount: number) => {
-  const durations = ["1hr", "2hrs", "4hrs", "8hrs", "12hrs", "1 día", "2 días", "3 días", "7 días", "15 días"];
-  const basePrices = [10, 18, 32, 60, 80, 50, 90, 120, 200, 350];
+  const durations = ["1 hora", "1 Dia", "15 dias", "30 dias"];
+  const basePrices = [5, 15, 100, 150];
   
   return Array.from({ length: amount }).map((_, i) => ({
     duration: durations[i % durations.length],
