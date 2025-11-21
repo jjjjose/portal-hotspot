@@ -19,25 +19,30 @@ const isImage = image && !text;
 <div class="mb-3 flex justify-center">
   <div
     class:list={[
-      "group relative flex items-center justify-center overflow-visible rounded-2xl shadow-lg transition-all duration-300 ease-out hover:scale-105 hover:shadow-xl",
+      "group relative flex items-center justify-center rounded-2xl shadow-lg transition-all duration-300 ease-out hover:scale-105 hover:shadow-xl",
+      isImage ? "overflow-hidden" : "overflow-visible",
       sizeClasses[size],
-      "bg-linear-to-br from-primary-500 via-primary-600 to-primary-700",
+      !isImage &&
+        "bg-linear-to-br from-primary-500 via-primary-600 to-primary-700",
     ]}
     style="contain: paint layout;"
   >
     <!-- Orbiting particles (Restored & Optimized) -->
-    <div
-      class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none"
-    >
-      <div class="orbit orbit-1 transform-gpu"></div>
-      <div class="orbit orbit-2 transform-gpu"></div>
-    </div>
+    {
+      !isImage && (
+        <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+          <div class="orbit orbit-1 transform-gpu" />
+          <div class="orbit orbit-2 transform-gpu" />
+        </div>
+      )
+    }
 
     <!-- Subtle gradient overlay -->
-    <div
-      class="absolute inset-0 bg-linear-to-tr from-white/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-20"
-    >
-    </div>
+    {
+      !isImage && (
+        <div class="absolute inset-0 bg-linear-to-tr from-white/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-20"></div>
+      )
+    }
 
     <!-- Content -->
     <div class="relative z-10 flex h-full w-full items-center justify-center">
@@ -48,7 +53,7 @@ const isImage = image && !text;
             alt="Logo"
             loading="eager"
             decoding="async"
-            class="h-full w-full rounded-2xl object-cover transition-transform duration-500 group-hover:scale-110 animate-image-pulse transform-gpu"
+            class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110 animate-image-pulse transform-gpu"
           />
         ) : text ? (
           <div
@@ -69,10 +74,11 @@ const isImage = image && !text;
     </div>
 
     <!-- Shine effect -->
-    <div
-      class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full pointer-events-none transform-gpu"
-    >
-    </div>
+    {
+      !isImage && (
+        <div class="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full pointer-events-none transform-gpu"></div>
+      )
+    }
   </div>
 </div>
 

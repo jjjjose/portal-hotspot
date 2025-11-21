@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import ThemeSelector from "../components/ThemeSelector.astro";
+import Favicon from "../../public/favicon.svg";
 
 const {
   title = "Portal Hotspot",
@@ -51,6 +52,7 @@ const particles = Array.from({ length: particleCount }, (_, idx) => {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="icon" href={Favicon.src + "?v=2"} />
   </head>
   <body
     class="flex min-h-screen flex-col font-sans antialiased transition-colors"

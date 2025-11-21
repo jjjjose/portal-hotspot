@@ -5,10 +5,11 @@ import TicketInput from "../components/TicketInput.astro";
 import InfoBanner from "../components/InfoBanner.astro";
 import Plans from "../components/Plans.astro";
 import Footer from "../components/Footer.astro";
+import ElectronetLogo from "../../public/logo_electronet_sin_fondo.png";
 ---
 
 <BaseLayout title="Portal Hotspot">
-  <Logo text="ELECTRONET" />
+  <Logo image={ElectronetLogo.src} size="lg" />
   <TicketInput />
   <InfoBanner />
   <Plans />
