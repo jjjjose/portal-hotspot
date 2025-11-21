@@ -1,82 +1,26 @@
 ---
+/**
+ * @fileoverview Componente TicketInput para autenticación portal hotspot.
+ * Proporciona validación de entrada, autenticación CHAP y redirección segura.
+ */
+
 import LoadingOverlay from "./LoadingOverlay.astro";
-import { hexMD5 } from "../utils/md5";
 ---
 
-<script define:vars={{ hexMD5 }}>
-  const input = document.querySelector('input[placeholder="Ticket o PIN"]');
-  const button = document.querySelector("#submit-btn");
-  const errorMsg = document.querySelector(".error-message");
-  const hintMsg = document.querySelector(".hint-text");
-  const loader = document.querySelector("#loader-overlay");
-  const container = document.querySelector("[data-chap-challenge]");
+<script>
+  import { initTicketHandler } from "../utils/ticketHandler";
 
-  // Obtener variables del cliente (desde atributos data o elemento)
-  const chapChallenge =
-    container?.getAttribute("data-chap-challenge") || "$(chap-challenge)";
-  const linkLoginOnly =
-    container?.getAttribute("data-link-login-only") || "$(link-login-only)";
-  const linkOrig = container?.getAttribute("data-link-orig") || "$(link-orig)";
-  const chapId = container?.getAttribute("data-chap-id") || "$(chap-id)";
-
-  const MIN_LENGTH = 4;
-  const DELAY_MS = 3000;
-
-  const updateState = () => {
-    const isValid = input.value.length >= MIN_LENGTH;
-    button.disabled = isValid === false;
-
-    if (input.value.length > 0 && input.value.length < MIN_LENGTH) {
-      errorMsg.textContent = `⚠️ Mínimo ${MIN_LENGTH} caracteres (tienes ${input.value.length})`;
-      errorMsg.classList.remove("hidden");
-      hintMsg.classList.add("hidden");
-    } else {
-      errorMsg.classList.add("hidden");
-      hintMsg.classList.remove("hidden");
-    }
-  };
-
-  const showLoader = () => {
-    loader.classList.remove("hidden");
-    loader.classList.add("show");
-  };
-
-  const submit = () => {
-    if (input.value.length < MIN_LENGTH) {
-      errorMsg.textContent = `⚠️ Debes ingresar mínimo ${MIN_LENGTH} caracteres`;
-      errorMsg.classList.remove("hidden");
-      hintMsg.classList.add("hidden");
-      return;
-    }
-
-    if (input.value.trim()) {
-      showLoader();
-      button.disabled = true;
-      input.disabled = true;
-
-      setTimeout(() => {
-        let password = "";
-
-        // Generate MD5 hash if CHAP authentication is available
-        if (chapId && chapChallenge) {
-          // Generate MD5 hash: chapId + password + chapChallenge
-          password = hexMD5(chapId + input.value + chapChallenge);
-        } else {
-          // Fallback: use password as-is if no CHAP
-          password = input.value;
-        }
-
-        const url = `${linkLoginOnly}?username=${input.value}&password=${password}&dst=${linkOrig}&popup=true`;
-        window.location.href = url;
-      }, DELAY_MS);
-    }
-  };
-
-  input.addEventListener("input", updateState);
-  button.addEventListener("click", submit);
-  input.addEventListener("keypress", (e) => e.key === "Enter" && submit());
-
-  updateState();
+  /**
+   * Inicializa el manejador de entrada de tickets cuando el DOM esté listo.
+   * Usa valores por defecto: mínimo 4 caracteres, retardo de 3 segundos.
+   */
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      initTicketHandler({ minLength: 4, delayMs: 3000 });
+    });
+  } else {
+    initTicketHandler({ minLength: 4, delayMs: 3000 });
+  }
 </script>
 
 <div
@@ -85,6 +29,7 @@ import { hexMD5 } from "../utils/md5";
   data-link-login-only="$(link-login-only)"
   data-link-orig="$(link-orig)"
   data-chap-id="$(chap-id)"
+  data-error="$(error)"
 >
   <div
     class="relative overflow-hidden rounded-lg transition-all duration-300 focus-within:shadow-lg"
@@ -218,5 +163,40 @@ import { hexMD5 } from "../utils/md5";
     100% {
       transform: translateX(100%);
     }
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+  }
+
+  /* Estilos para toast */
+  :global(.bg-red-500) {
+    background-color: rgb(239, 68, 68);
+  }
+
+  :global(.bg-green-500) {
+    background-color: rgb(34, 197, 94);
+  }
+
+  :global(.bg-yellow-500) {
+    background-color: rgb(234, 179, 8);
   }
 </style>
