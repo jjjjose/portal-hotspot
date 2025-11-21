@@ -41,13 +41,22 @@ interface DomElements {
  * @returns {ChapConfig} Configuración CHAP extraída
  */
 function getChapConfig(container: HTMLElement): ChapConfig {
+  const chapChallenge = container.getAttribute("data-chap-challenge");
+  const linkLoginOnly = container.getAttribute("data-link-login-only");
+  const linkOrig = container.getAttribute("data-link-orig");
+  const chapId = container.getAttribute("data-chap-id");
+
   return {
     chapChallenge:
-      container.getAttribute("data-chap-challenge") || "$(chap-challenge)",
+      !chapChallenge || chapChallenge === "$(chap-challenge)"
+        ? ""
+        : chapChallenge,
     linkLoginOnly:
-      container.getAttribute("data-link-login-only") || "$(link-login-only)",
-    linkOrig: container.getAttribute("data-link-orig") || "$(link-orig)",
-    chapId: container.getAttribute("data-chap-id") || "$(chap-id)",
+      !linkLoginOnly || linkLoginOnly === "$(link-login-only)"
+        ? ""
+        : linkLoginOnly,
+    linkOrig: !linkOrig || linkOrig === "$(link-orig)" ? "" : linkOrig,
+    chapId: !chapId || chapId === "$(chap-id)" ? "" : chapId,
   };
 }
 
@@ -115,15 +124,15 @@ function showLoader(loader: HTMLElement): void {
 /**
  * Calcula la contraseña usando autenticación CHAP.
  * Genera hash MD5 de: chapId + contraseña + chapChallenge
- * @param {string} username - Nombre de usuario (ticket/PIN)
+ * @param {string} password - Contraseña (ticket/PIN)
  * @param {ChapConfig} chapConfig - Configuración CHAP
  * @returns {string} Contraseña calculada (MD5 o texto plano si no hay CHAP)
  */
-function calculatePassword(username: string, chapConfig: ChapConfig): string {
-  if (chapConfig.chapId && chapConfig.chapChallenge) {
-    return hexMD5(chapConfig.chapId + username + chapConfig.chapChallenge);
+function calculatePassword(password: string, chapConfig: ChapConfig): string {
+  if (chapConfig.chapId) {
+    return hexMD5(chapConfig.chapId + password + chapConfig.chapChallenge);
   }
-  return username;
+  return password;
 }
 
 /**
@@ -232,8 +241,8 @@ function redirectToLogin(
     const url = new URL(chapConfig.linkLoginOnly);
     url.searchParams.append("username", username);
     url.searchParams.append("password", password);
-    url.searchParams.append("dst", chapConfig.linkOrig);
-    url.searchParams.append("popup", "true");
+    chapConfig.linkOrig && url.searchParams.append("dst", chapConfig.linkOrig);
+    url.searchParams.append("popup", "false");
 
     window.location.href = url.toString();
     return true;
@@ -298,7 +307,7 @@ function handleSubmit(
 
   setTimeout(() => {
     try {
-      const password = calculatePassword(input.value, chapConfig);
+      const password = calculatePassword("", chapConfig); // se envia vacío porque se usa solo chapId + chapChallenge
       redirectToLogin(input.value, password, chapConfig, elements);
     } catch (error) {
       // Mostrar error y permitir reintentar
@@ -335,7 +344,11 @@ export function initTicketHandler(
 
     // Detectar y mostrar error del servidor si existe
     const serverError = elements.container.getAttribute("data-error");
-    if (serverError && serverError !== "$(error)" && serverError.trim() !== "") {
+    if (
+      serverError &&
+      serverError !== "$(error)" &&
+      serverError.trim() !== ""
+    ) {
       showToast(`⚠️ ${serverError}`, "error");
     }
 
