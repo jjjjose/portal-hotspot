@@ -1,18 +1,23 @@
 ---
 import LoadingOverlay from "./LoadingOverlay.astro";
+import { hexMD5 } from "../utils/md5";
 ---
 
-<script>
-  const url = "http://localhost:3000/ticket/";
-  const input = document.querySelector(
-    'input[placeholder="Ticket o PIN"]'
-  ) as HTMLInputElement;
-  const button = document.querySelector("#submit-btn") as HTMLButtonElement;
-  const errorMsg = document.querySelector(
-    ".error-message"
-  ) as HTMLParagraphElement;
-  const hintMsg = document.querySelector(".hint-text") as HTMLParagraphElement;
-  const loader = document.querySelector("#loader-overlay") as HTMLDivElement;
+<script define:vars={{ hexMD5 }}>
+  const input = document.querySelector('input[placeholder="Ticket o PIN"]');
+  const button = document.querySelector("#submit-btn");
+  const errorMsg = document.querySelector(".error-message");
+  const hintMsg = document.querySelector(".hint-text");
+  const loader = document.querySelector("#loader-overlay");
+  const container = document.querySelector("[data-chap-challenge]");
+
+  // Obtener variables del cliente (desde atributos data o elemento)
+  const chapChallenge =
+    container?.getAttribute("data-chap-challenge") || "$(chap-challenge)";
+  const linkLoginOnly =
+    container?.getAttribute("data-link-login-only") || "$(link-login-only)";
+  const linkOrig = container?.getAttribute("data-link-orig") || "$(link-orig)";
+  const chapId = container?.getAttribute("data-chap-id") || "$(chap-id)";
 
   const MIN_LENGTH = 4;
   const DELAY_MS = 3000;
@@ -36,11 +41,6 @@ import LoadingOverlay from "./LoadingOverlay.astro";
     loader.classList.add("show");
   };
 
-  const hideLoader = () => {
-    loader.classList.remove("show");
-    loader.classList.add("hidden");
-  };
-
   const submit = () => {
     if (input.value.length < MIN_LENGTH) {
       errorMsg.textContent = `⚠️ Debes ingresar mínimo ${MIN_LENGTH} caracteres`;
@@ -55,7 +55,19 @@ import LoadingOverlay from "./LoadingOverlay.astro";
       input.disabled = true;
 
       setTimeout(() => {
-        window.location.href = url + input.value;
+        let password = "";
+
+        // Generate MD5 hash if CHAP authentication is available
+        if (chapId && chapChallenge) {
+          // Generate MD5 hash: chapId + password + chapChallenge
+          password = hexMD5(chapId + input.value + chapChallenge);
+        } else {
+          // Fallback: use password as-is if no CHAP
+          password = input.value;
+        }
+
+        const url = `${linkLoginOnly}?username=${input.value}&password=${password}&dst=${linkOrig}&popup=true`;
+        window.location.href = url;
       }, DELAY_MS);
     }
   };
@@ -67,7 +79,13 @@ import LoadingOverlay from "./LoadingOverlay.astro";
   updateState();
 </script>
 
-<div class="group mb-1 w-full">
+<div
+  class="group mb-1 w-full"
+  data-chap-challenge="$(chap-challenge)"
+  data-link-login-only="$(link-login-only)"
+  data-link-orig="$(link-orig)"
+  data-chap-id="$(chap-id)"
+>
   <div
     class="relative overflow-hidden rounded-lg transition-all duration-300 focus-within:shadow-lg"
     style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-secondary) 100%); border: 1.5px solid var(--primary-200); box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(16, 185, 129, 0.05);"
