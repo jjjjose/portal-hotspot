@@ -1,5 +1,24 @@
 ---
+const contactos = [
+  // { type: "email", value: "jjjjoseignacio@gmail.com" },
+  { type: "whatsapp", value: "73261143" },
+  { type: "phone", value: "76746708" },
+];
 
+const iconMap = {
+  email:
+    '<path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z"></path><path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z"></path>',
+  whatsapp:
+    '<path d="M10 0C4.477 0 0 4.477 0 10c0 1.878.522 3.629 1.427 5.146L0 20l5.146-1.426C6.371 19.478 8.122 20 10 20c5.523 0 10-4.477 10-10S15.523 0 10 0zm0 18c-1.524 0-2.96-.392-4.209-1.078l-.302-.164-3.129.867.867-3.129-.164-.302C2.392 12.96 2 11.524 2 10c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8zm3.898-6.126c-.212-.106-1.257-.622-1.453-.693-.196-.071-.338-.106-.481.106-.143.211-.555.692-.68.834-.125.143-.25.16-.462.053-.212-.106-.896-.331-1.707-1.054-.632-.561-1.059-1.256-1.184-1.468-.125-.212-.013-.326.094-.431.096-.096.212-.25.318-.375.107-.125.143-.212.214-.355.071-.143.035-.268-.018-.375-.053-.107-.481-1.161-.659-1.589-.174-.421-.348-.364-.481-.364-.125 0-.267-.016-.41-.016-.142 0-.375.054-.572.268-.197.214-.753.736-.753 1.792 0 1.056.772 2.078.88 2.221.107.143 1.519 2.319 3.683 3.252.515.223.917.356 1.228.456.516.162 1.084.14 1.493.085.455-.063 1.398-.571 1.596-1.123.198-.551.198-1.025.139-1.123-.059-.098-.197-.155-.41-.262z"></path>',
+  phone:
+    '<path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd"></path>',
+};
+
+const hrefMap = {
+  email: (v: string) => `mailto:${v}`,
+  whatsapp: (v: string) => `https://wa.me/${v}`,
+  phone: (v: string) => `tel:${v}`,
+};
 ---
 
 <div
@@ -15,84 +34,38 @@
       Contactos
     </h3>
 
-    <!-- Email -->
-    <div
-      class="flex items-center gap-2 rounded p-1.5"
-      style="background-color: var(--primary-100);"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        class="h-3 w-3"
-        style="color: var(--primary-700);"
-      >
-        <path
-          d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z"
-        ></path>
-        <path
-          d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z"
-        ></path>
-      </svg>
-      <a
-        href="mailto:soporte@hotspot.com"
-        class="text-xs font-semibold transition-colors hover:opacity-70"
-        style="color: var(--primary-700);"
-      >
-        soporte@hotspot.com
-      </a>
-    </div>
-
-    <!-- Phone Numbers -->
+    <!-- Contacts List -->
     <div class="space-y-1">
-      <div
-        class="flex items-center gap-2 rounded p-1.5"
-        style="background-color: var(--primary-100);"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="h-3 w-3"
-          style="color: var(--primary-700);"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z"
-            clip-rule="evenodd"></path>
-        </svg>
-        <a
-          href="tel:+1234567890"
-          class="text-xs font-semibold transition-colors hover:opacity-70"
-          style="color: var(--primary-700);"
-        >
-          +1 (234) 567-890
-        </a>
-      </div>
-      <div
-        class="flex items-center gap-2 rounded p-1.5"
-        style="background-color: var(--primary-100);"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="h-3 w-3"
-          style="color: var(--primary-700);"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z"
-            clip-rule="evenodd"></path>
-        </svg>
-        <a
-          href="tel:+0987654321"
-          class="text-xs font-semibold transition-colors hover:opacity-70"
-          style="color: var(--primary-700);"
-        >
-          +0 (987) 654-321
-        </a>
-      </div>
+      {
+        contactos.map((contact) => (
+          <div
+            class="flex items-center gap-2 rounded p-1.5"
+            style="background-color: var(--primary-100);"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="h-3 w-3"
+              style="color: var(--primary-700);"
+              set:html={iconMap[contact.type as keyof typeof iconMap]}
+            />
+            <a
+              href={hrefMap[contact.type as keyof typeof hrefMap](
+                contact.value
+              )}
+              class="text-xs font-semibold transition-colors hover:opacity-70"
+              style="color: var(--primary-700);"
+              target={contact.type === "whatsapp" ? "_blank" : undefined}
+              rel={
+                contact.type === "whatsapp" ? "noopener noreferrer" : undefined
+              }
+            >
+              {contact.value}
+            </a>
+          </div>
+        ))
+      }
     </div>
   </div>
 </div>
