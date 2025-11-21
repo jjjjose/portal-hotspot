@@ -36,6 +36,25 @@ interface DomElements {
 }
 
 /**
+ * Decodifica cadenas escapadas de MikroTik (octal/hex).
+ * Necesario porque al leer de atributos data-*, recibimos la cadena literal
+ * (ej: "\\376") en lugar del carácter interpretado.
+ * @param {string} str - Cadena a decodificar
+ * @returns {string} Cadena decodificada
+ */
+function decodeMikrotikString(str: string): string {
+  if (!str) return "";
+
+  return str
+    .replace(/\\([0-7]{1,3})/g, (_, octal) =>
+      String.fromCharCode(parseInt(octal, 8))
+    )
+    .replace(/\\x([0-9A-Fa-f]{1,2})/g, (_, hex) =>
+      String.fromCharCode(parseInt(hex, 16))
+    );
+}
+
+/**
  * Obtiene las variables de configuración CHAP del contenedor.
  * @param {HTMLElement} container - Elemento contenedor con atributos data-*
  * @returns {ChapConfig} Configuración CHAP extraída
@@ -46,18 +65,36 @@ function getChapConfig(container: HTMLElement): ChapConfig {
   const linkOrig = container.getAttribute("data-link-orig");
   const chapId = container.getAttribute("data-chap-id");
 
-  return {
+  console.log("[TicketHandler] Raw attributes:", { chapId, chapChallenge });
+
+  const config = {
     chapChallenge:
       !chapChallenge || chapChallenge === "$(chap-challenge)"
         ? ""
-        : chapChallenge,
+        : decodeMikrotikString(chapChallenge),
     linkLoginOnly:
       !linkLoginOnly || linkLoginOnly === "$(link-login-only)"
         ? ""
         : linkLoginOnly,
     linkOrig: !linkOrig || linkOrig === "$(link-orig)" ? "" : linkOrig,
-    chapId: !chapId || chapId === "$(chap-id)" ? "" : chapId,
+    chapId:
+      !chapId || chapId === "$(chap-id)" ? "" : decodeMikrotikString(chapId),
   };
+
+  if (config.chapId || config.chapChallenge) {
+    console.log("[TicketHandler] Decoded (hex):", {
+      id: config.chapId
+        .split("")
+        .map((c) => c.charCodeAt(0).toString(16).padStart(2, "0"))
+        .join(" "),
+      challenge: config.chapChallenge
+        .split("")
+        .map((c) => c.charCodeAt(0).toString(16).padStart(2, "0"))
+        .join(" "),
+    });
+  }
+
+  return config;
 }
 
 /**
@@ -130,7 +167,11 @@ function showLoader(loader: HTMLElement): void {
  */
 function calculatePassword(password: string, chapConfig: ChapConfig): string {
   if (chapConfig.chapId) {
-    return hexMD5(chapConfig.chapId + password + chapConfig.chapChallenge);
+    const hash = hexMD5(
+      chapConfig.chapId + password + chapConfig.chapChallenge
+    );
+    console.log("[TicketHandler] Hash:", hash);
+    return hash;
   }
   return password;
 }
@@ -239,10 +280,14 @@ function redirectToLogin(
 
   try {
     const url = new URL(chapConfig.linkLoginOnly);
-    url.searchParams.append("username", username);
-    url.searchParams.append("password", password);
-    chapConfig.linkOrig && url.searchParams.append("dst", chapConfig.linkOrig);
-    url.searchParams.append("popup", "false");
+
+    // Usar set en lugar de append para evitar duplicados
+    url.searchParams.set("username", username);
+    url.searchParams.set("password", password);
+    if (chapConfig.linkOrig) {
+      url.searchParams.set("dst", chapConfig.linkOrig);
+    }
+    url.searchParams.set("popup", "false");
 
     window.location.href = url.toString();
     return true;
@@ -308,7 +353,7 @@ function handleSubmit(
   setTimeout(() => {
     try {
       const password = calculatePassword("", chapConfig); // se envia vacío porque se usa solo chapId + chapChallenge
-      redirectToLogin(input.value, password, chapConfig, elements);
+      redirectToLogin(input.value.trim(), password, chapConfig, elements);
     } catch (error) {
       // Mostrar error y permitir reintentar
       hideLoader(loader);
