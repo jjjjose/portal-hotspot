@@ -16,10 +16,10 @@ import LoadingOverlay from "./LoadingOverlay.astro";
    */
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      initTicketHandler({ minLength: 4, delayMs: 3000 });
+      initTicketHandler({ minLength: 4, delayMs: 2000 });
     });
   } else {
-    initTicketHandler({ minLength: 4, delayMs: 3000 });
+    initTicketHandler({ minLength: 4, delayMs: 2000 });
   }
 </script>
 
