@@ -1,71 +1,61 @@
 ---
-const contactos = [
-  // { type: "email", value: "jjjjoseignacio@gmail.com" },
-  { type: "whatsapp", value: "73261143" },
-  { type: "phone", value: "76746708" },
+import IconWhatsapp from "./icons/IconWhatsapp.astro";
+import IconPhone from "./icons/IconPhone.astro";
+
+const supportNumbers = [
+  { label: "Soporte Técnico", number: "73261143" },
+  { label: "Atención al Cliente", number: "76746708" },
 ];
 
-const iconMap = {
-  email:
-    '<path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z"></path><path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z"></path>',
-  whatsapp:
-    '<path d="M10 0C4.477 0 0 4.477 0 10c0 1.878.522 3.629 1.427 5.146L0 20l5.146-1.426C6.371 19.478 8.122 20 10 20c5.523 0 10-4.477 10-10S15.523 0 10 0zm0 18c-1.524 0-2.96-.392-4.209-1.078l-.302-.164-3.129.867.867-3.129-.164-.302C2.392 12.96 2 11.524 2 10c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8zm3.898-6.126c-.212-.106-1.257-.622-1.453-.693-.196-.071-.338-.106-.481.106-.143.211-.555.692-.68.834-.125.143-.25.16-.462.053-.212-.106-.896-.331-1.707-1.054-.632-.561-1.059-1.256-1.184-1.468-.125-.212-.013-.326.094-.431.096-.096.212-.25.318-.375.107-.125.143-.212.214-.355.071-.143.035-.268-.018-.375-.053-.107-.481-1.161-.659-1.589-.174-.421-.348-.364-.481-.364-.125 0-.267-.016-.41-.016-.142 0-.375.054-.572.268-.197.214-.753.736-.753 1.792 0 1.056.772 2.078.88 2.221.107.143 1.519 2.319 3.683 3.252.515.223.917.356 1.228.456.516.162 1.084.14 1.493.085.455-.063 1.398-.571 1.596-1.123.198-.551.198-1.025.139-1.123-.059-.098-.197-.155-.41-.262z"></path>',
-  phone:
-    '<path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd"></path>',
-};
+const WHATSAPP_MESSAGE =
+  "Hola! 👋 Quisiera adquirir un plan de WiFi Ilimitado 🚀";
 
-const hrefMap = {
-  email: (v: string) => `mailto:${v}`,
-  whatsapp: (v: string) => `https://wa.me/${v}`,
-  phone: (v: string) => `tel:${v}`,
-};
+const getWhatsappLink = (v: string) =>
+  `whatsapp://send/?phone=591${v}&text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+const getPhoneLink = (v: string) => `tel:${v}`;
 ---
 
-<div
-  class="mt-3 rounded-lg p-2 transition-colors"
-  style="background-color: var(--bg-secondary); border: 1px solid var(--primary-500); border-opacity: 0.3;"
->
-  <div class="space-y-1.5">
-    <!-- Header -->
-    <h3
-      class="text-xs font-bold transition-colors"
-      style="color: var(--primary-500);"
-    >
-      Contactos
-    </h3>
+<div class="mt-4 w-full">
+  <p
+    class="text-[10px] text-center mb-2 uppercase tracking-wider opacity-60 font-bold"
+    style="color: var(--text-secondary);"
+  >
+    Elige una opción para contactarnos
+  </p>
 
-    <!-- Contacts List -->
-    <div class="space-y-1">
-      {
-        contactos.map((contact) => (
-          <div
-            class="flex items-center gap-2 rounded p-1.5"
-            style="background-color: var(--primary-100);"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              class="h-3 w-3"
-              style="color: var(--primary-700);"
-              set:html={iconMap[contact.type as keyof typeof iconMap]}
-            />
+  <div class="grid gap-2">
+    {
+      supportNumbers.map((contact) => (
+        <div
+          class="flex items-center justify-between rounded-lg p-1.5 pl-3 border transition-all"
+          style="background-color: var(--bg-secondary); border-color: var(--primary-200);"
+        >
+          <span class="font-bold text-sm" style="color: var(--text);">
+            {contact.number}
+          </span>
+
+          <div class="flex gap-1.5">
             <a
-              href={hrefMap[contact.type as keyof typeof hrefMap](
-                contact.value
-              )}
-              class="text-xs font-semibold transition-colors hover:opacity-70"
-              style="color: var(--primary-700);"
-              target={contact.type === "whatsapp" ? "_blank" : undefined}
-              rel={
-                contact.type === "whatsapp" ? "noopener noreferrer" : undefined
-              }
+              href={getPhoneLink(contact.number)}
+              class="flex items-center gap-1 rounded px-2 py-1.5 transition-all hover:bg-opacity-80"
+              style="background-color: var(--primary-50); color: var(--primary-700);"
             >
-              {contact.value}
+              <IconPhone class="h-3 w-3" />
+              <span class="text-[10px] font-bold">Llamar</span>
+            </a>
+
+            <a
+              href={getWhatsappLink(contact.number)}
+              class="flex items-center gap-1 rounded px-2 py-1.5 transition-all hover:bg-opacity-90"
+              style="background-color: var(--primary-600); color: white;"
+              rel="noopener noreferrer"
+            >
+              <IconWhatsapp class="h-3 w-3" />
+              <span class="text-[10px] font-bold">Chat</span>
             </a>
           </div>
-        ))
-      }
-    </div>
+        </div>
+      ))
+    }
   </div>
 </div>
