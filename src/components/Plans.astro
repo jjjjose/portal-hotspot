@@ -1,10 +1,11 @@
 ---
+import IconWhatsapp from "./icons/IconWhatsapp.astro";
+
 interface Props {
   count?: number;
 }
 
 const { count = 4 } = Astro.props;
-
 
 const PLAN_DATA = [
   { duration: "1 Hora", price: 5 },
@@ -16,69 +17,94 @@ const PLAN_DATA = [
 const plans = PLAN_DATA.slice(0, count).map((plan, i) => ({
   ...plan,
   currency: "Bs",
-  isPopular: i === 1
+  isPopular: i === 1,
 }));
 
-const gridClass = count === 4 
-  ? "grid-cols-2 sm:grid-cols-4" 
-  : `grid-cols-${Math.min(count, 2)} sm:grid-cols-${Math.min(count, 4)}`;
+const gridClass =
+  count === 4
+    ? "grid-cols-2 sm:grid-cols-4"
+    : `grid-cols-${Math.min(count, 2)} sm:grid-cols-${Math.min(count, 4)}`;
+
+const getPlanLink = (plan: (typeof PLAN_DATA)[0]) => {
+  const message = `Hola! 👋 Quiero comprar el plan de *${plan.duration}* por *${plan.price}Bs* 🚀`;
+  return `whatsapp://send/?phone=59173261143&text=${encodeURIComponent(message)}`;
+};
 ---
 
 <div class="w-full space-y-2">
-  <!-- Header -->
+  <!-- Header Compact -->
   <div class="flex items-center justify-between px-1">
-    <div>
-      <h2 class="text-base font-bold leading-tight text-text">
-        Elige tu Plan
-      </h2>
-      <p class="text-[10px] font-medium opacity-80 text-text-secondary">
-        Navegación de alta velocidad
-      </p>
-    </div>
-    <div class="px-1.5 py-0.5 rounded-md bg-opacity-10 flex items-center gap-1 bg-primary-500">
+    <h2 class="text-sm font-bold text-text">Elige tu Plan</h2>
+    <div
+      class="flex items-center gap-1 rounded-full border border-primary-100 bg-primary-50 px-2 py-0.5"
+    >
       <span class="relative flex h-1.5 w-1.5">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-primary-500"></span>
-        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary-600"></span>
+        <span
+          class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-500 opacity-75"
+        ></span>
+        <span
+          class="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary-600"
+        ></span>
       </span>
-      <span class="text-[9px] font-bold uppercase tracking-wide text-primary-700">Ilimitado</span>
+      <span class="text-[9px] font-bold uppercase text-primary-700"
+        >Ilimitado</span
+      >
     </div>
   </div>
 
-  <!-- Plans Grid -->
+  <!-- Plans Grid Compact -->
   <div class={`grid ${gridClass} gap-2`}>
     {
       plans.map((plan, index) => (
-        <div
+        <a
+          href={getPlanLink(plan)}
+          target="_blank"
           class:list={[
-            "group relative flex flex-col items-center p-2 rounded-lg transition-all duration-300 hover:shadow-md active:scale-95 cursor-pointer bg-opacity-50 backdrop-blur-sm bg-bg-secondary",
-            plan.isPopular ? "border-2 border-primary-500" : "border border-primary-200"
+            "group relative flex flex-col justify-between overflow-hidden rounded-xl border p-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md active:scale-95",
+            plan.isPopular
+              ? "border-primary-500 bg-primary-50/50 shadow-sm ring-1 ring-primary-500/30"
+              : "border-primary-100 bg-white hover:border-primary-300",
           ]}
-          style={{ animationDelay: `${index * 100}ms` }}
+          style={{ animationDelay: `${index * 50}ms` }}
         >
           {plan.isPopular && (
-            <div class="absolute -top-2 px-1.5 py-px rounded-full text-[8px] font-bold uppercase tracking-wider text-white shadow-sm transform bg-primary-500">
-              Mejor Valor
+            <div class="absolute right-0 top-0 z-10 rounded-bl-lg bg-primary-500 px-1.5 py-0.5 text-[8px] font-bold text-white shadow-sm animate-pulse">
+              TOP
             </div>
           )}
 
-          <div class="flex items-baseline leading-none">
-             <span class="text-lg font-bold tracking-tight text-text">
-              {plan.price}
+          <div class="flex flex-col items-center gap-0.5">
+            <span class="text-[10px] font-bold uppercase text-text-secondary opacity-80">
+              {plan.duration}
             </span>
-            <span class="text-[10px] font-bold ml-0.5 text-primary-600">
-              {plan.currency}
-            </span>
+            <div class="flex items-baseline leading-none transition-transform duration-300 group-hover:scale-110">
+              <span class="text-xl font-black tracking-tight text-primary-700">
+                {plan.price}
+              </span>
+              <span class="ml-0.5 text-[10px] font-bold text-primary-500">
+                {plan.currency}
+              </span>
+            </div>
           </div>
 
-          <div class="w-full h-px my-1 opacity-10 bg-text-secondary"></div>
-
-          <h3 class="text-[10px] font-bold uppercase tracking-wide text-text-secondary">
-            {plan.duration}
-          </h3>
-          
-          <!-- Hover Gradient -->
-          <div class="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none bg-linear-to-br from-primary-500 to-transparent"></div>
-        </div>
+          <div
+            class:list={[
+              "mt-2 flex w-full items-center justify-center gap-1 rounded-lg py-1 text-[9px] font-bold uppercase transition-all relative overflow-hidden",
+              plan.isPopular
+                ? "bg-primary-600 text-white shadow-md shadow-primary-200 group-hover:bg-primary-700"
+                : "bg-primary-50 text-primary-700 group-hover:bg-primary-100",
+            ]}
+          >
+            <!-- Shine Effect -->
+            <div class:list={[
+              "absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent",
+              plan.isPopular ? "animate-shine-constant" : "group-hover:animate-shine-hover"
+            ]}></div>
+            
+            <IconWhatsapp class="h-2.5 w-2.5 relative z-10 drop-shadow-sm" />
+            <span class="relative z-10 drop-shadow-sm">Solicitar</span>
+          </div>
+        </a>
       ))
     }
   </div>
@@ -86,8 +112,16 @@ const gridClass = count === 4
 
 <style>
   .group {
-    animation: slideUp 0.5s ease-out forwards;
+    animation: slideUp 0.4s ease-out forwards;
     opacity: 0;
+  }
+
+  .animate-shine-constant {
+    animation: shimmer 3s infinite;
+  }
+
+  .animate-shine-hover {
+    animation: shimmer 1s infinite;
   }
 
   @keyframes slideUp {
@@ -99,5 +133,10 @@ const gridClass = count === 4
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    20%, 100% { transform: translateX(100%); }
   }
 </style>
