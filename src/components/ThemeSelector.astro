@@ -10,6 +10,12 @@ const themes = [
   { name: "fuchsia", color: "#d946ef" },
   { name: "orange", color: "#f97316" },
   { name: "teal", color: "#14b8a6" },
+  // Multi-color themes
+  { name: "sunset", color: "linear-gradient(135deg, #f97316, #e11d48)" },
+  { name: "aurora", color: "linear-gradient(135deg, #2dd4bf, #0ea5e9)" },
+  { name: "candy", color: "linear-gradient(135deg, #e879f9, #8b5cf6)" },
+  { name: "neon", color: "linear-gradient(135deg, #a3e635, #06b6d4)" },
+  { name: "tropical", color: "linear-gradient(135deg, #facc15, #0d9488)" },
 ];
 ---
 
@@ -78,7 +84,7 @@ const themes = [
           themes.map((theme) => (
             <button
               class="h-6 w-6 rounded-full border border-slate-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-1 transition-transform dark:border-slate-600"
-              style={`background-color: ${theme.color}`}
+              style={`background: ${theme.color}`}
               data-theme-name={theme.name}
               title={theme.name}
               role="menuitem"
