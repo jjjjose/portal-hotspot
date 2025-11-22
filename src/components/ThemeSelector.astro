@@ -97,6 +97,9 @@ const themes = [
 </div>
 
 <script>
+  const DEFAULT_MODE = "light";
+  const DEFAULT_THEME = "emerald";
+
   const darkModeToggle = document.getElementById("dark-mode-toggle");
   const darkIcon = document.getElementById("dark-icon");
   const button = document.getElementById("theme-menu-button");
@@ -104,7 +107,7 @@ const themes = [
   const themeButtons = document.querySelectorAll("[data-theme-name]");
 
   // Initialize mode
-  const savedMode = localStorage.getItem("mode") || "light";
+  const savedMode = localStorage.getItem("mode") || DEFAULT_MODE;
   if (savedMode === "dark") {
     document.documentElement.setAttribute("data-mode", "dark");
     updateDarkModeIcon(true);
@@ -167,6 +170,6 @@ const themes = [
   });
 
   // Initialize theme
-  const savedTheme = localStorage.getItem("theme") || "emerald";
+  const savedTheme = localStorage.getItem("theme") || DEFAULT_THEME;
   document.documentElement.setAttribute("data-theme", savedTheme);
 </script>
