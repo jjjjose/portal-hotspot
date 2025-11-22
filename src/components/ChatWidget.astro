@@ -1,0 +1,320 @@
+---
+import IconChat from "./icons/IconChat.astro";
+import IconArrowRight from "./icons/IconArrowRight.astro";
+---
+
+<div
+  id="chat-widget-container"
+  class="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2 font-sans"
+>
+  <!-- Floating Button -->
+  <button
+    id="chat-toggle-btn"
+    class="group flex items-center gap-2 rounded-full bg-[var(--primary-500)] px-4 py-3 text-white shadow-lg transition-transform hover:scale-105 hover:bg-[var(--primary-600)] cursor-pointer"
+  >
+    <span class="text-sm font-medium">Contáctenos para compras</span>
+    <IconChat class="h-6 w-6" />
+  </button>
+</div>
+
+<!-- Modal (Moved outside to avoid stacking context issues) -->
+<div
+  id="chat-modal"
+  class="fixed inset-0 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm transition-opacity opacity-0 duration-300 font-sans"
+  style="z-index: 9999; display: none;"
+>
+  <div
+    class="w-full max-w-md overflow-hidden rounded-2xl bg-[var(--bg)] shadow-2xl ring-1 ring-[var(--primary-500)]/20 transition-transform scale-95 duration-300"
+    style="background-color: var(--bg); color: var(--text);"
+  >
+    <!-- Header -->
+    <div
+      class="flex items-center justify-between border-b border-[var(--primary-500)]/10 bg-[var(--primary-500)]/5 p-4"
+    >
+      <h3 class="text-lg font-semibold text-[var(--primary-600)]">
+        Atención al Cliente
+      </h3>
+      <button
+        id="chat-close-btn"
+        class="rounded-full p-1 hover:bg-[var(--primary-500)]/10 transition-colors cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-0 h-[450px] flex flex-col relative">
+      <!-- Step 1: Form -->
+      <div
+        id="chat-step-form"
+        class="flex flex-col gap-4 p-6 h-full justify-center absolute inset-0 transition-transform duration-300 bg-[var(--bg)] z-10"
+      >
+        <div class="text-center mb-2">
+          <h4 class="text-xl font-bold mb-2">¡Hola! 👋</h4>
+          <p class="text-sm opacity-80">
+            Por favor completa tus datos para iniciar el chat.
+          </p>
+        </div>
+
+        <form id="chat-contact-form" class="flex flex-col gap-4">
+          <div class="space-y-1">
+            <label for="chat-name" class="text-xs font-medium opacity-70"
+              >Nombre</label
+            >
+            <input
+              type="text"
+              id="chat-name"
+              required
+              class="w-full rounded-lg border border-[var(--primary-500)]/20 bg-[var(--bg)] px-4 py-2 focus:border-[var(--primary-500)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)]/20"
+              placeholder="Tu nombre"
+            />
+          </div>
+          <div class="space-y-1">
+            <label for="chat-phone" class="text-xs font-medium opacity-70"
+              >Celular</label
+            >
+            <input
+              type="tel"
+              id="chat-phone"
+              required
+              class="w-full rounded-lg border border-[var(--primary-500)]/20 bg-[var(--bg)] px-4 py-2 focus:border-[var(--primary-500)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)]/20"
+              placeholder="Tu número de celular"
+            />
+          </div>
+          <button
+            type="submit"
+            class="mt-2 flex items-center justify-center gap-2 rounded-lg bg-[var(--primary-500)] px-4 py-2.5 font-medium text-white transition-colors hover:bg-[var(--primary-600)] cursor-pointer"
+          >
+            Siguiente
+            <IconArrowRight class="h-4 w-4" />
+          </button>
+        </form>
+      </div>
+
+      <!-- Step 2: Chat -->
+      <div
+        id="chat-step-messages"
+        class="flex flex-col h-full absolute inset-0 translate-x-full transition-transform duration-300 bg-[var(--bg)] z-20"
+      >
+        <div
+          id="chat-messages-container"
+          class="flex-1 overflow-y-auto p-4 space-y-3"
+        >
+          <!-- Messages will be injected here -->
+        </div>
+
+        <div
+          class="border-t border-[var(--primary-500)]/10 p-3 bg-[var(--primary-500)]/5"
+        >
+          <form id="chat-input-form" class="flex gap-2">
+            <input
+              type="text"
+              id="chat-input"
+              class="flex-1 rounded-lg border border-[var(--primary-500)]/20 bg-[var(--bg)] px-4 py-2 text-sm focus:border-[var(--primary-500)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)]/20"
+              placeholder="Escribe un mensaje..."
+              autocomplete="off"
+            />
+            <button
+              type="submit"
+              class="rounded-lg bg-[var(--primary-500)] p-2 text-white transition-colors hover:bg-[var(--primary-600)] cursor-pointer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupChatWidget() {
+    const toggleBtn = document.getElementById("chat-toggle-btn");
+    const modal = document.getElementById("chat-modal");
+    const closeBtn = document.getElementById("chat-close-btn");
+    // Select the inner container for animation
+    const modalContent = modal?.firstElementChild as HTMLElement;
+
+    const stepForm = document.getElementById("chat-step-form");
+    const stepMessages = document.getElementById("chat-step-messages");
+    const contactForm = document.getElementById("chat-contact-form");
+    const messagesContainer = document.getElementById(
+      "chat-messages-container"
+    );
+    const inputForm = document.getElementById("chat-input-form");
+    const chatInput = document.getElementById("chat-input") as HTMLInputElement;
+
+    if (!toggleBtn || !modal || !modalContent) {
+      console.error("Chat widget elements not found", {
+        toggleBtn,
+        modal,
+        modalContent,
+      });
+      return;
+    }
+
+    // Prevent multiple initializations on the same elements
+    if (toggleBtn.dataset.chatInitialized === "true") {
+      return;
+    }
+    toggleBtn.dataset.chatInitialized = "true";
+
+    let isOpen = false;
+    let hasJoined = false;
+
+    function toggleChat() {
+      isOpen = !isOpen;
+      console.log("Toggling chat:", isOpen);
+
+      if (isOpen) {
+        // Show
+        modal!.style.display = "flex";
+        // Force reflow to enable transition
+        void modal!.offsetWidth;
+
+        modal!.classList.remove("opacity-0");
+        modalContent!.classList.remove("scale-95");
+      } else {
+        // Hide
+        modal!.classList.add("opacity-0");
+        modalContent!.classList.add("scale-95");
+
+        // Wait for transition to finish before hiding display
+        setTimeout(() => {
+          if (!isOpen) {
+            modal!.style.display = "none";
+          }
+        }, 300);
+      }
+    }
+
+    function addMessage(text: string, isUser = false) {
+      if (!messagesContainer) return;
+
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `flex ${isUser ? "justify-end" : "justify-start"} animate-fade-in`;
+
+      const bubble = document.createElement("div");
+      bubble.className = `max-w-[80%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
+        isUser
+          ? "bg-[var(--primary-500)] text-white rounded-br-none"
+          : "bg-[var(--primary-500)]/10 text-[var(--text)] rounded-bl-none"
+      }`;
+      bubble.textContent = text;
+
+      msgDiv.appendChild(bubble);
+      messagesContainer.appendChild(msgDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function initChat() {
+      // Slide transition
+      stepForm?.classList.add("-translate-x-full");
+      stepMessages?.classList.remove("translate-x-full");
+
+      if (!hasJoined) {
+        hasJoined = true;
+        setTimeout(() => addMessage("Hola, ¿en qué podemos ayudarte?"), 500);
+        setTimeout(() => addMessage("¿Deseas adquirir un plan?"), 1500);
+        setTimeout(
+          () =>
+            addMessage(
+              "Si no te contesto en 5 minutos llámanos al +57 300 123 4567"
+            ),
+          3000
+        );
+      }
+    }
+
+    // Event Listeners
+    toggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleChat();
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleChat();
+      });
+    }
+
+    // Close on backdrop click
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) toggleChat();
+    });
+
+    contactForm?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = (document.getElementById("chat-name") as HTMLInputElement)
+        .value;
+      const phone = (document.getElementById("chat-phone") as HTMLInputElement)
+        .value;
+
+      if (name && phone) {
+        initChat();
+      }
+    });
+
+    inputForm?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = chatInput?.value.trim();
+      if (text) {
+        addMessage(text, true);
+        chatInput.value = "";
+      }
+    });
+  }
+
+  // Run on load
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupChatWidget);
+  } else {
+    setupChatWidget();
+  }
+
+  // Support for Astro View Transitions
+  document.addEventListener("astro:page-load", setupChatWidget);
+</script>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+</style>

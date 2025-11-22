@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import ThemeSelector from "../components/ThemeSelector.astro";
+import ChatWidget from "../components/ChatWidget.astro";
 import Favicon from "../../public/favicon.svg";
 
 const {
@@ -102,5 +103,6 @@ const particles = Array.from({ length: particleCount }, (_, idx) => {
     >
       <slot />
     </main>
+    <!-- <ChatWidget /> -->
   </body>
 </html>
