@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where([data-mode=dark], [data-mode=dark] *));
+
 @theme {
   --color-primary-50: var(--primary-50);
   --color-primary-100: var(--primary-100);
@@ -402,14 +404,17 @@
 /* Bubble rising animation with organic drift */
 @keyframes rise-up {
   0% {
-    transform: translate(-50%, -50%) translateY(0) translateX(var(--drift-start, 0px)) scale(var(--scale-start, 0.7));
+    transform: translate(-50%, -50%) translateY(0)
+      translateX(var(--drift-start, 0px)) scale(var(--scale-start, 0.7));
     opacity: 0;
   }
   12% {
     opacity: var(--o, 0.15);
   }
   35% {
-    transform: translate(-50%, -50%) translateY(calc(var(--rise-distance, 150vh) * -0.35)) translateX(var(--drift-mid, 0px)) scale(var(--scale-mid, 1));
+    transform: translate(-50%, -50%)
+      translateY(calc(var(--rise-distance, 150vh) * -0.35))
+      translateX(var(--drift-mid, 0px)) scale(var(--scale-mid, 1));
     opacity: calc(var(--o, 0.15) * 0.7);
   }
   50% {
@@ -422,7 +427,9 @@
     opacity: var(--o, 0.15);
   }
   100% {
-    transform: translate(-50%, -50%) translateY(calc(var(--rise-distance, 150vh) * -1)) translateX(var(--drift-end, 0px)) scale(var(--scale-end, 0.4));
+    transform: translate(-50%, -50%)
+      translateY(calc(var(--rise-distance, 150vh) * -1))
+      translateX(var(--drift-end, 0px)) scale(var(--scale-end, 0.4));
     opacity: 0;
   }
 }
@@ -453,9 +460,15 @@
 
 /* Make particles visible on all devices */
 @media (max-width: 768px) {
-  .particle { opacity: calc(var(--o) * 0.95); filter: blur(1px); }
+  .particle {
+    opacity: calc(var(--o) * 0.95);
+    filter: blur(1px);
+  }
 }
 
 @media (max-width: 480px) {
-  .particle { opacity: calc(var(--o) * 0.8); filter: blur(0.8px); }
+  .particle {
+    opacity: calc(var(--o) * 0.8);
+    filter: blur(0.8px);
+  }
 }

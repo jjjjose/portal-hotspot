@@ -27,18 +27,16 @@ const getPhoneLink = (v: string) => `tel:${v}`;
     {
       supportNumbers.map((contact) => (
         <div
-          class="flex items-center justify-between rounded-lg p-1.5 pl-3 border transition-all"
-          style="background-color: var(--bg-secondary); border-color: var(--primary-200);"
+          class="flex items-center justify-between rounded-lg p-1.5 pl-3 border transition-all bg-(--bg-secondary) border-(--primary-200) dark:border-slate-700"
         >
-          <span class="font-bold text-sm" style="color: var(--text);">
+          <span class="font-bold text-sm text-(--text)">
             {contact.number}
           </span>
 
           <div class="flex gap-1.5">
             <a
               href={getPhoneLink(contact.number)}
-              class="flex items-center gap-1 rounded px-2 py-1.5 transition-all hover:bg-opacity-80"
-              style="background-color: var(--primary-50); color: var(--primary-700);"
+              class="flex items-center gap-1 rounded px-2 py-1.5 transition-all hover:bg-opacity-80 bg-primary-50 text-primary-700 dark:bg-slate-700 dark:text-slate-200"
             >
               <IconPhone class="h-3 w-3" />
               <span class="text-[10px] font-bold">Llamar</span>
@@ -46,8 +44,7 @@ const getPhoneLink = (v: string) => `tel:${v}`;
 
             <a
               href={getWhatsappLink(contact.number)}
-              class="flex items-center gap-1 rounded px-2 py-1.5 transition-all hover:bg-opacity-90"
-              style="background-color: var(--primary-600); color: white;"
+              class="flex items-center gap-1 rounded px-2 py-1.5 transition-all hover:bg-opacity-90 bg-primary-600 text-white dark:bg-primary-700"
               rel="noopener noreferrer"
             >
               <IconWhatsapp class="h-3 w-3" />
