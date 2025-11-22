@@ -1,27 +1,88 @@
 ---
+
 ---
-<div
-  class="mb-4 overflow-hidden rounded-xl shadow-sm transition-all hover:shadow-md"
-  style="background: linear-gradient(135deg, #1e293b, #0f172a);"
->
-  <div class="relative flex items-center gap-3 p-3 text-white">
+
+<div class="mb-3 w-full space-y-1.5">
+  <!-- Main Banner -->
+  <div
+    class="relative overflow-hidden rounded-xl p-2.5 shadow-sm transition-transform hover:scale-[1.01]"
+    style="background: linear-gradient(135deg, #1e293b, #0f172a);"
+  >
     <div
-      class="absolute -right-6 -top-6 h-20 w-20 rounded-full opacity-20 blur-xl"
+      class="absolute -right-4 -top-4 h-16 w-16 rounded-full opacity-20 blur-xl"
       style="background-color: var(--primary-400);"
     >
     </div>
-    <div
-      class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm"
-    >
-      <span class="text-base">🚀</span>
+
+    <div class="relative z-10 flex items-center gap-2.5 text-white">
+      <div
+        class="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 ring-1 ring-white/10 backdrop-blur-sm"
+      >
+        <span class="absolute text-base animate-rocket">🚀</span>
+      </div>
+
+      <div>
+        <h3 class="text-xs font-bold leading-tight text-primary-50">
+          ¡Internet de Alta Velocidad!
+        </h3>
+        <p class="text-[10px] font-medium leading-tight text-slate-400">
+          Conexión estable y sin interrupciones.
+        </p>
+      </div>
     </div>
-    <div class="relative z-10">
-      <h3 class="mb-0.5 text-xs font-bold leading-tight">
-        Navega sin límites
-      </h3>
-      <p class="text-[10px] leading-tight text-slate-300">
-        Velocidad ultra rápida y conexión estable.
-      </p>
+  </div>
+
+  <!-- Mini Banner Marquee -->
+  <div
+    class="overflow-hidden rounded-lg border border-primary-100 bg-primary-50 py-1"
+  >
+    <div class="whitespace-nowrap animate-marquee-lr">
+      <span
+        class="text-[9px] font-bold uppercase tracking-wide text-primary-700"
+      >
+        🎁 ¡Muy pronto! Acceso GRATIS de prueba por tiempo limitado... Mantente
+        atento 🕒
+      </span>
     </div>
   </div>
 </div>
+
+<style>
+  .animate-rocket {
+    animation: rocket-fly 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .animate-marquee-lr {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 15s linear infinite;
+  }
+
+  @keyframes rocket-fly {
+    0% {
+      transform: translateY(150%) scale(0.5);
+      opacity: 0;
+    }
+    15% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    85% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-150%) scale(0.5);
+      opacity: 0;
+    }
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+</style>
